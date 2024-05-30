@@ -98,16 +98,34 @@ class InstagramDownloader:
             print("Error: Download link not found!")
             return None
 
-        # ダウンロードリンクからコンテンツを取得
-        response = requests.get(download_link)
+        
 
-        # 応答が正常であることを確認（HTTPステータスコードが200の場合）
-        if response.status_code == 200:
-            # コンテンツをローカルファイルに保存
-            with open('downloaded_file.mp4', 'wb') as file:
-                file.write(response.content)
-        else:
-            print(f"Error: Unable to download the content. HTTP Status Code: {response.status_code}")
+        b_response200 = False
+        while(not b_response200):
+
+            # ダウンロードリンクからコンテンツを取得
+            response = requests.get(download_link)
+            
+            # 応答が正常であることを確認（HTTPステータスコードが200の場合）
+            if response.status_code == 200:
+                # コンテンツをローカルファイルに保存
+                with open('downloaded_file.mp4', 'wb') as file:
+                    file.write(response.content)
+                b_response200 = True # レスポンス200が返ってきて正常な動作をするまで繰り返す
+            else:
+                print(f"Error: Unable to download the content. HTTP Status Code: {response.status_code}")
+
+                #try:
+                    # 失敗している場合、再度ダウンロードリンクを取得
+                    #video_element = EC.presence_of_element_located((By.CSS_SELECTOR, "video.img-fluid"))
+                    #source_element = video_element.find_element(By.TAG_NAME, "source")
+                #except NoSuchElementException:
+                    #source_element = None
+
+
+        # 見つかった要素から href 属性を取得して返す
+        #print(source_element.get_attribute("src"))
+
         return 'downloaded_file.mp4'
 
     # ダウンロードしたコンテンツをインスタグラムにアップロードするメソッド
@@ -211,7 +229,7 @@ class InstagramDownloader:
         caption_area = wait.until(EC.presence_of_element_located((By.CSS_SELECTOR,'div[aria-label="キャプションを入力…"]')))
         # キャプション入力エリアにテキストを入力
         #caption_area.send_keys(username + "様" + "\n" + user_input_text)
-        caption_area.send_keys(user_input_text)
+        caption_area.send_keys(user_input_text + " #面白い #おもしろ動画 #衝撃 #衝撃映像 #やば")
 
         # シェアボタンをクリック
         share_button = wait.until(EC.presence_of_element_located((By.XPATH,'//div[text()="シェア"]')))
